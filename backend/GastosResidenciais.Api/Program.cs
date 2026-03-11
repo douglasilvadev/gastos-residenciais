@@ -1,6 +1,14 @@
+using GastosResidenciais.Api.src.modules.pessoas.application.use_cases;
+using GastosResidenciais.Api.src.modules.pessoas.domain.repository_interface;
+using GastosResidenciais.Api.src.modules.pessoas.infra.repository;
+using GastosResidenciais.Api.src.shared.infra.persistence.context;
 using GastosResidenciais.Api.src.shared.infra.server.middlewares;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -13,6 +21,14 @@ builder.Services.AddCors(options =>
               .AllowAnyHeader()
               .AllowAnyMethod());
 });
+
+builder.Services.AddScoped<IPessoaRepository, PessoaRepository>();
+
+builder.Services.AddScoped<CriarPessoaUseCase>();
+builder.Services.AddScoped<ListarPessoasUseCase>();
+builder.Services.AddScoped<ObterPessoaPorIdUseCase>();
+builder.Services.AddScoped<EditarPessoaUseCase>();
+builder.Services.AddScoped<DeletarPessoaUseCase>();
 
 var app = builder.Build();
 
