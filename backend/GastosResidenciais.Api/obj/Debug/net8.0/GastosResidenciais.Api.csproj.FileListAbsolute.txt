@@ -1,11 +1,3 @@
-/home/dg/Documents/teste-tecnico-maxprodi/backend/GastosResidenciais.Api/obj/Debug/net8.0/GastosResidenciais.Api.csproj.AssemblyReference.cache
-/home/dg/Documents/teste-tecnico-maxprodi/backend/GastosResidenciais.Api/obj/Debug/net8.0/GastosResidenciais.Api.GeneratedMSBuildEditorConfig.editorconfig
-/home/dg/Documents/teste-tecnico-maxprodi/backend/GastosResidenciais.Api/obj/Debug/net8.0/GastosResidenciais.Api.AssemblyInfoInputs.cache
-/home/dg/Documents/teste-tecnico-maxprodi/backend/GastosResidenciais.Api/obj/Debug/net8.0/GastosResidenciais.Api.AssemblyInfo.cs
-/home/dg/Documents/teste-tecnico-maxprodi/backend/GastosResidenciais.Api/obj/Debug/net8.0/GastosResidenciais.Api.csproj.CoreCompileInputs.cache
-/home/dg/Documents/teste-tecnico-maxprodi/backend/GastosResidenciais.Api/obj/Debug/net8.0/GastosResidenciais.Api.MvcApplicationPartsAssemblyInfo.cs
-/home/dg/Documents/teste-tecnico-maxprodi/backend/GastosResidenciais.Api/obj/Debug/net8.0/GastosResidenciais.Api.MvcApplicationPartsAssemblyInfo.cache
-/home/dg/Documents/teste-tecnico-maxprodi/backend/GastosResidenciais.Api/obj/Debug/net8.0/GastosResidenciais.Api.sourcelink.json
 /home/dg/Documents/teste-tecnico-maxprodi/backend/GastosResidenciais.Api/bin/Debug/net8.0/appsettings.Development.json
 /home/dg/Documents/teste-tecnico-maxprodi/backend/GastosResidenciais.Api/bin/Debug/net8.0/appsettings.json
 /home/dg/Documents/teste-tecnico-maxprodi/backend/GastosResidenciais.Api/bin/Debug/net8.0/GastosResidenciais.Api
@@ -95,6 +87,14 @@
 /home/dg/Documents/teste-tecnico-maxprodi/backend/GastosResidenciais.Api/bin/Debug/net8.0/tr/Microsoft.CodeAnalysis.Workspaces.resources.dll
 /home/dg/Documents/teste-tecnico-maxprodi/backend/GastosResidenciais.Api/bin/Debug/net8.0/zh-Hans/Microsoft.CodeAnalysis.Workspaces.resources.dll
 /home/dg/Documents/teste-tecnico-maxprodi/backend/GastosResidenciais.Api/bin/Debug/net8.0/zh-Hant/Microsoft.CodeAnalysis.Workspaces.resources.dll
+/home/dg/Documents/teste-tecnico-maxprodi/backend/GastosResidenciais.Api/obj/Debug/net8.0/GastosResidenciais.Api.csproj.AssemblyReference.cache
+/home/dg/Documents/teste-tecnico-maxprodi/backend/GastosResidenciais.Api/obj/Debug/net8.0/GastosResidenciais.Api.GeneratedMSBuildEditorConfig.editorconfig
+/home/dg/Documents/teste-tecnico-maxprodi/backend/GastosResidenciais.Api/obj/Debug/net8.0/GastosResidenciais.Api.AssemblyInfoInputs.cache
+/home/dg/Documents/teste-tecnico-maxprodi/backend/GastosResidenciais.Api/obj/Debug/net8.0/GastosResidenciais.Api.AssemblyInfo.cs
+/home/dg/Documents/teste-tecnico-maxprodi/backend/GastosResidenciais.Api/obj/Debug/net8.0/GastosResidenciais.Api.csproj.CoreCompileInputs.cache
+/home/dg/Documents/teste-tecnico-maxprodi/backend/GastosResidenciais.Api/obj/Debug/net8.0/GastosResidenciais.Api.MvcApplicationPartsAssemblyInfo.cs
+/home/dg/Documents/teste-tecnico-maxprodi/backend/GastosResidenciais.Api/obj/Debug/net8.0/GastosResidenciais.Api.MvcApplicationPartsAssemblyInfo.cache
+/home/dg/Documents/teste-tecnico-maxprodi/backend/GastosResidenciais.Api/obj/Debug/net8.0/GastosResidenciais.Api.sourcelink.json
 /home/dg/Documents/teste-tecnico-maxprodi/backend/GastosResidenciais.Api/obj/Debug/net8.0/staticwebassets.build.json
 /home/dg/Documents/teste-tecnico-maxprodi/backend/GastosResidenciais.Api/obj/Debug/net8.0/staticwebassets.development.json
 /home/dg/Documents/teste-tecnico-maxprodi/backend/GastosResidenciais.Api/obj/Debug/net8.0/staticwebassets/msbuild.GastosResidenciais.Api.Microsoft.AspNetCore.StaticWebAssets.props
