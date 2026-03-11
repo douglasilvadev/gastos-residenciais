@@ -1,0 +1,68 @@
+# =========================
+# Sistema operacional
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# Logs
+# =========================
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# =========================
+# Ambiente
+# =========================
+.env
+.env.*
+!.env.example
+
+# =========================
+# Node / Frontend
+# =========================
+node_modules/
+dist/
+build/
+coverage/
+.vite/
+
+# =========================
+# VS Code
+# =========================
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/launch.json
+!.vscode/tasks.json
+
+# =========================
+# .NET / C#
+# =========================
+bin/
+obj/
+*.user
+*.rsuser
+*.suo
+
+# =========================
+# EF / local db / temp
+# =========================
+*.db
+*.sqlite
+*.sqlite3
+
+# =========================
+# JetBrains
+# =========================
+.idea/
+
+# =========================
+# Arquivos temporários
+# =========================
+tmp/
+temp/
+bin/
+obj/
