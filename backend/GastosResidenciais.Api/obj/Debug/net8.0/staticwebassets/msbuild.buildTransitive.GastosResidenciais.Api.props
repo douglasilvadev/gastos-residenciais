@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="../buildMultiTargeting/GastosResidenciais.Api.props" />
-</Project>
