@@ -2,10 +2,6 @@ using GastosResidenciais.Api.src.shared.infra.server.exceptions;
 
 namespace GastosResidenciais.Api.src.shared.infra.server.middlewares;
 
-/// <summary>
-/// Middleware responsável por capturar exceções da aplicação
-/// e transformar em respostas HTTP padronizadas.
-/// </summary>
 public class ExceptionMiddleware
 {
     private readonly RequestDelegate _next;
@@ -31,12 +27,14 @@ public class ExceptionMiddleware
             context.Response.StatusCode = StatusCodes.Status404NotFound;
             await context.Response.WriteAsJsonAsync(new { error = ex.Message });
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             context.Response.StatusCode = StatusCodes.Status500InternalServerError;
             await context.Response.WriteAsJsonAsync(new
             {
-                error = "Erro interno do servidor."
+                error = "Erro interno do servidor.",
+                detail = ex.Message,
+                inner = ex.InnerException?.Message
             });
         }
     }

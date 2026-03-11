@@ -33,63 +33,93 @@ public class TransacaoRepository : ITransacaoRepository
 
     public async Task<RelatorioTotaisPorPessoaResponse> ObterTotaisPorPessoa()
     {
-        var totais = await _context.Pessoas
-            .Select(p => new TotalPorPessoaResponse(
-                p.Id,
-                p.Nome,
-                p.Transacoes
-                    .Where(t => t.Tipo == TipoTransacao.Receita)
-                    .Sum(t => (decimal?)t.Valor) ?? 0,
-                p.Transacoes
-                    .Where(t => t.Tipo == TipoTransacao.Despesa)
-                    .Sum(t => (decimal?)t.Valor) ?? 0,
-                (p.Transacoes
-                    .Where(t => t.Tipo == TipoTransacao.Receita)
-                    .Sum(t => (decimal?)t.Valor) ?? 0)
-                -
-                (p.Transacoes
-                    .Where(t => t.Tipo == TipoTransacao.Despesa)
-                    .Sum(t => (decimal?)t.Valor) ?? 0)
-            ))
-            .OrderBy(x => x.Nome)
+        var pessoas = await _context.Pessoas
+            .OrderBy(p => p.Nome)
             .ToListAsync();
 
+        var totaisPorPessoa = await _context.Transacoes
+            .GroupBy(t => t.PessoaId)
+            .Select(g => new
+            {
+                PessoaId = g.Key,
+                TotalReceitas = g
+                    .Where(t => t.Tipo == TipoTransacao.Receita)
+                    .Sum(t => t.Valor),
+                TotalDespesas = g
+                    .Where(t => t.Tipo == TipoTransacao.Despesa)
+                    .Sum(t => t.Valor)
+            })
+            .ToListAsync();
+
+        var itens = pessoas
+            .Select(p =>
+            {
+                var total = totaisPorPessoa.FirstOrDefault(x => x.PessoaId == p.Id);
+
+                var totalReceitas = total?.TotalReceitas ?? 0;
+                var totalDespesas = total?.TotalDespesas ?? 0;
+
+                return new TotalPorPessoaResponse(
+                    p.Id,
+                    p.Nome,
+                    totalReceitas,
+                    totalDespesas,
+                    totalReceitas - totalDespesas
+                );
+            })
+            .ToList();
+
         return new RelatorioTotaisPorPessoaResponse(
-            totais,
-            totais.Sum(t => t.TotalReceitas),
-            totais.Sum(t => t.TotalDespesas),
-            totais.Sum(t => t.Saldo)
+            itens,
+            itens.Sum(x => x.TotalReceitas),
+            itens.Sum(x => x.TotalDespesas),
+            itens.Sum(x => x.Saldo)
         );
     }
 
     public async Task<RelatorioTotaisPorCategoriaResponse> ObterTotaisPorCategoria()
     {
-        var totais = await _context.Categorias
-            .Select(c => new TotalPorCategoriaResponse(
-                c.Id,
-                c.Descricao,
-                c.Transacoes
-                    .Where(t => t.Tipo == TipoTransacao.Receita)
-                    .Sum(t => (decimal?)t.Valor) ?? 0,
-                c.Transacoes
-                    .Where(t => t.Tipo == TipoTransacao.Despesa)
-                    .Sum(t => (decimal?)t.Valor) ?? 0,
-                (c.Transacoes
-                    .Where(t => t.Tipo == TipoTransacao.Receita)
-                    .Sum(t => (decimal?)t.Valor) ?? 0)
-                -
-                (c.Transacoes
-                    .Where(t => t.Tipo == TipoTransacao.Despesa)
-                    .Sum(t => (decimal?)t.Valor) ?? 0)
-            ))
-            .OrderBy(x => x.Descricao)
+        var categorias = await _context.Categorias
+            .OrderBy(c => c.Descricao)
             .ToListAsync();
 
+        var totaisPorCategoria = await _context.Transacoes
+            .GroupBy(t => t.CategoriaId)
+            .Select(g => new
+            {
+                CategoriaId = g.Key,
+                TotalReceitas = g
+                    .Where(t => t.Tipo == TipoTransacao.Receita)
+                    .Sum(t => t.Valor),
+                TotalDespesas = g
+                    .Where(t => t.Tipo == TipoTransacao.Despesa)
+                    .Sum(t => t.Valor)
+            })
+            .ToListAsync();
+
+        var itens = categorias
+            .Select(c =>
+            {
+                var total = totaisPorCategoria.FirstOrDefault(x => x.CategoriaId == c.Id);
+
+                var totalReceitas = total?.TotalReceitas ?? 0;
+                var totalDespesas = total?.TotalDespesas ?? 0;
+
+                return new TotalPorCategoriaResponse(
+                    c.Id,
+                    c.Descricao,
+                    totalReceitas,
+                    totalDespesas,
+                    totalReceitas - totalDespesas
+                );
+            })
+            .ToList();
+
         return new RelatorioTotaisPorCategoriaResponse(
-            totais,
-            totais.Sum(t => t.TotalReceitas),
-            totais.Sum(t => t.TotalDespesas),
-            totais.Sum(t => t.Saldo)
+            itens,
+            itens.Sum(x => x.TotalReceitas),
+            itens.Sum(x => x.TotalDespesas),
+            itens.Sum(x => x.Saldo)
         );
     }
 }
