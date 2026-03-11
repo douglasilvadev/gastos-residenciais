@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("GastosResidenciais.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5ada0060d589b08403d93926ac705ea9e6756063")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5a510abe91cbe25fe9789acbb2b5119f6fbb4774")]
 [assembly: System.Reflection.AssemblyProductAttribute("GastosResidenciais.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("GastosResidenciais.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
