@@ -1,7 +1,7 @@
 namespace GastosResidenciais.Api.src.modules.categorias.domain.value_objects;
 
 /// <summary>
-/// Define a finalidade permitida para uma categoria.
+/// Define a finalidade de uma categoria financeira.
 /// </summary>
 public enum Finalidade
 {

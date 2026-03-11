@@ -6,7 +6,7 @@ using GastosResidenciais.Api.src.shared.infra.server.exceptions;
 namespace GastosResidenciais.Api.src.modules.categorias.domain.entities;
 
 /// <summary>
-/// Entidade de domínio para categorias financeiras.
+/// Entidade de domínio que representa uma categoria do sistema.
 /// </summary>
 public class Categoria
 {
