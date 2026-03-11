@@ -1,18 +1,28 @@
+using GastosResidenciais.Api.src.modules.categorias.application.use_cases;
+using GastosResidenciais.Api.src.modules.categorias.domain.repository_interface;
+using GastosResidenciais.Api.src.modules.categorias.infra.repository;
 using GastosResidenciais.Api.src.modules.pessoas.application.use_cases;
 using GastosResidenciais.Api.src.modules.pessoas.domain.repository_interface;
 using GastosResidenciais.Api.src.modules.pessoas.infra.repository;
+using GastosResidenciais.Api.src.modules.transacoes.application.use_cases;
+using GastosResidenciais.Api.src.modules.transacoes.domain.domain_services;
+using GastosResidenciais.Api.src.modules.transacoes.domain.repository_interface;
+using GastosResidenciais.Api.src.modules.transacoes.infra.repository;
 using GastosResidenciais.Api.src.shared.infra.persistence.context;
 using GastosResidenciais.Api.src.shared.infra.server.middlewares;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 
 builder.Services.AddCors(options =>
 {
@@ -22,13 +32,28 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod());
 });
 
+
 builder.Services.AddScoped<IPessoaRepository, PessoaRepository>();
+builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
+builder.Services.AddScoped<ITransacaoRepository, TransacaoRepository>();
+
+
+builder.Services.AddScoped<TransacaoDomainService>();
+
 
 builder.Services.AddScoped<CriarPessoaUseCase>();
 builder.Services.AddScoped<ListarPessoasUseCase>();
 builder.Services.AddScoped<ObterPessoaPorIdUseCase>();
 builder.Services.AddScoped<EditarPessoaUseCase>();
 builder.Services.AddScoped<DeletarPessoaUseCase>();
+
+
+builder.Services.AddScoped<CriarCategoriaUseCase>();
+builder.Services.AddScoped<ListarCategoriasUseCase>();
+
+
+builder.Services.AddScoped<CriarTransacaoUseCase>();
+builder.Services.AddScoped<ListarTransacoesUseCase>();
 
 var app = builder.Build();
 
