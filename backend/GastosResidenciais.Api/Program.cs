@@ -18,7 +18,7 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var corsOrigin = builder.Configuration["App:CorsOrigin"];
+var corsOrigin = builder.Configuration["App:CorsOrigin"] ?? "http://localhost:5173";
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -30,7 +30,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
-        policy.WithOrigins(corsOrigin!)
+        policy.WithOrigins(corsOrigin)
               .AllowAnyHeader()
               .AllowAnyMethod());
 });

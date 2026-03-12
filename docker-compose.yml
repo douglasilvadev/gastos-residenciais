@@ -1,0 +1,55 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: gastos_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: gastos_residenciais
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - gastos_net
+
+  api:
+    build:
+      context: ./backend/GastosResidenciais.Api
+      dockerfile: Dockerfile
+    container_name: gastos_api
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=gastos_residenciais;Username=postgres;Password=123456
+      App__CorsOrigin: http://localhost:3000
+    ports:
+      - "5158:8080"
+    depends_on:
+      - postgres
+    networks:
+      - gastos_net
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_BASE_URL: /api
+    container_name: gastos_frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      - api
+    networks:
+      - gastos_net
+
+volumes:
+  postgres_data:
+
+networks:
+  gastos_net:
+    driver: bridge

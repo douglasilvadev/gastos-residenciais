@@ -242,12 +242,11 @@ GET /api/relatorios/totais-por-categoria
 
 ---
 
-# Possíveis Melhorias Futuras
+## Configuração local
 
-- Autenticação e autorização
-- Paginação nas listagens
-- Testes automatizados
-- Dockerização
-- Deploy em cloud
-- Edição de categorias e transações no frontend
-- Dashboard financeiro
+### Backend
+Utilize User Secrets para armazenar a string de conexão local:
+
+```bash
+dotnet user-secrets init
+dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Host=localhost;Port=5432;Database=gastos_residenciais;Username=postgres;Password=123456"
