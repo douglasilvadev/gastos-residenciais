@@ -51,6 +51,9 @@ builder.Services.AddScoped<DeletarCategoriaUseCase>();
 
 builder.Services.AddScoped<CriarTransacaoUseCase>();
 builder.Services.AddScoped<ListarTransacoesUseCase>();
+builder.Services.AddScoped<DeletarTransacaoUseCase>();
+builder.Services.AddScoped<ConsultarTotaisPorPessoaUseCase>();
+builder.Services.AddScoped<ConsultarTotaisPorCategoriaUseCase>();
 
 builder.Services.AddScoped<ConsultarTotaisPorPessoaUseCase>();
 builder.Services.AddScoped<ConsultarTotaisPorCategoriaUseCase>();

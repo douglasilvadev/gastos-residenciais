@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import type {FormEvent } from "react";
+import type { FormEvent } from "react";
 import { categoriasApi } from "../../api/categoriasApi";
 import { pessoasApi } from "../../api/pessoasApi";
 import { transacoesApi } from "../../api/transacoesApi";
@@ -107,6 +107,32 @@ export function TransacoesPage() {
       setErro(mensagemApi);
     } finally {
       setSalvando(false);
+    }
+  }
+
+  async function handleExcluir(id: string) {
+    const confirmou = window.confirm("Deseja realmente excluir esta transação?");
+
+    if (!confirmou) {
+      return;
+    }
+
+    try {
+      setErro("");
+      setMensagem("");
+
+      await transacoesApi.deletar(id);
+      setMensagem("Transação removida com sucesso.");
+
+      await carregarDados();
+    } catch (error: any) {
+      console.error(error);
+
+      const mensagemApi =
+        error?.response?.data?.error ||
+        "Não foi possível excluir a transação.";
+
+      setErro(mensagemApi);
     }
   }
 
@@ -313,6 +339,7 @@ export function TransacoesPage() {
                 <th style={{ padding: "12px 8px" }}>Categoria</th>
                 <th style={{ padding: "12px 8px" }}>Pessoa</th>
                 <th style={{ padding: "12px 8px" }}>Criado em</th>
+                <th style={{ padding: "12px 8px" }}>Ações</th>
               </tr>
             </thead>
             <tbody>
@@ -330,6 +357,21 @@ export function TransacoesPage() {
                   <td style={{ padding: "12px 8px" }}>{transacao.pessoaNome}</td>
                   <td style={{ padding: "12px 8px" }}>
                     {new Date(transacao.criadoEm).toLocaleString("pt-BR")}
+                  </td>
+                  <td style={{ padding: "12px 8px" }}>
+                    <button
+                      onClick={() => handleExcluir(transacao.id)}
+                      style={{
+                        background: "#dc2626",
+                        color: "#ffffff",
+                        border: "none",
+                        padding: "8px 12px",
+                        borderRadius: "6px",
+                        cursor: "pointer",
+                      }}
+                    >
+                      Excluir
+                    </button>
                   </td>
                 </tr>
               ))}

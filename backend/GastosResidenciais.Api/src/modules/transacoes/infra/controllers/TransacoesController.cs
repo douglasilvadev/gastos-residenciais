@@ -24,4 +24,13 @@ public class TransacoesController : ControllerBase
         var transacoes = await useCase.Executar();
         return Ok(transacoes);
     }
+
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> Deletar(
+        Guid id,
+        [FromServices] DeletarTransacaoUseCase useCase)
+    {
+        await useCase.Executar(id);
+        return NoContent();
+    }
 }

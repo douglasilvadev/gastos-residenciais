@@ -7,6 +7,8 @@ public interface ITransacaoRepository
 {
     Task Adicionar(Transacao transacao);
     Task<List<Transacao>> ListarTodas();
+    Task<Transacao?> ObterPorId(Guid id);
+    Task Remover(Transacao transacao);
     Task<RelatorioTotaisPorPessoaResponse> ObterTotaisPorPessoa();
     Task<RelatorioTotaisPorCategoriaResponse> ObterTotaisPorCategoria();
 }

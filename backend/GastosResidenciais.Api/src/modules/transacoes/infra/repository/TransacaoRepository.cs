@@ -31,6 +31,20 @@ public class TransacaoRepository : ITransacaoRepository
             .ToListAsync();
     }
 
+    public async Task<Transacao?> ObterPorId(Guid id)
+    {
+        return await _context.Transacoes
+            .Include(t => t.Categoria)
+            .Include(t => t.Pessoa)
+            .FirstOrDefaultAsync(t => t.Id == id);
+    }
+
+    public async Task Remover(Transacao transacao)
+    {
+        _context.Transacoes.Remove(transacao);
+        await _context.SaveChangesAsync();
+    }
+
     public async Task<RelatorioTotaisPorPessoaResponse> ObterTotaisPorPessoa()
     {
         var pessoas = await _context.Pessoas

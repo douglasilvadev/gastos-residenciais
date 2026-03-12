@@ -16,6 +16,10 @@ export const transacoesApi = {
     return response.data;
   },
 
+  deletar: async (id: string): Promise<void> => {
+    await httpClient.delete(`/transacoes/${id}`);
+  },
+
   obterTotaisPorPessoa: async (): Promise<RelatorioTotaisPorPessoa> => {
     const response = await httpClient.get<RelatorioTotaisPorPessoa>(
       "/relatorios/totais-por-pessoa"
