@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using GastosResidenciais.Api.src.modules.pessoas.application.dtos;
 using GastosResidenciais.Api.src.modules.pessoas.domain.entities;
 using GastosResidenciais.Api.src.modules.pessoas.domain.repository_interface;
@@ -21,9 +22,16 @@ public class CriarPessoaUseCase
             throw new DomainException("Nome é obrigatório.");
         }
 
-        if (request.Nome.Trim().Length > 200)
+        var nome = request.Nome.Trim();
+
+        if (nome.Length > 200)
         {
             throw new DomainException("Nome deve ter no máximo 200 caracteres.");
+        }
+
+        if (!Regex.IsMatch(nome, @"^[A-Za-zÀ-ÿ\s]+$"))
+        {
+            throw new DomainException("Nome não pode conter números.");
         }
 
         if (request.Idade <= 0)
@@ -36,7 +44,7 @@ public class CriarPessoaUseCase
             throw new DomainException("Idade máxima permitida é 110 anos.");
         }
 
-        var pessoa = Pessoa.Criar(request.Nome, request.Idade);
+        var pessoa = Pessoa.Criar(nome, request.Idade);
 
         await _pessoaRepository.Adicionar(pessoa);
 
