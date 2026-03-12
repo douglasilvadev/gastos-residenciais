@@ -18,6 +18,8 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var corsOrigin = builder.Configuration["App:CorsOrigin"];
+
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -28,7 +30,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
-        policy.WithOrigins("http://localhost:5173")
+        policy.WithOrigins(corsOrigin!)
               .AllowAnyHeader()
               .AllowAnyMethod());
 });
@@ -52,8 +54,6 @@ builder.Services.AddScoped<DeletarCategoriaUseCase>();
 builder.Services.AddScoped<CriarTransacaoUseCase>();
 builder.Services.AddScoped<ListarTransacoesUseCase>();
 builder.Services.AddScoped<DeletarTransacaoUseCase>();
-builder.Services.AddScoped<ConsultarTotaisPorPessoaUseCase>();
-builder.Services.AddScoped<ConsultarTotaisPorCategoriaUseCase>();
 
 builder.Services.AddScoped<ConsultarTotaisPorPessoaUseCase>();
 builder.Services.AddScoped<ConsultarTotaisPorCategoriaUseCase>();

@@ -58,6 +58,9 @@ obj/
 # JetBrains
 # =========================
 .idea/
+.env
+.env.*
+!.env.example
 
 # =========================
 # Arquivos temporários

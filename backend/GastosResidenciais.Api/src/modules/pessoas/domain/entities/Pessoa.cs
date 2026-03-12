@@ -14,8 +14,6 @@ public class Pessoa
     public int Idade { get; private set; }
     public DateTime CriadoEm { get; private set; }
     public DateTime AtualizadoEm { get; private set; }
-
-    // Navegação para EF Core
     public List<Transacao> Transacoes { get; private set; } = new();
 
     private Pessoa()
