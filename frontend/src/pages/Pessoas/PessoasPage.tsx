@@ -32,27 +32,33 @@ export function PessoasPage() {
   }, []);
 
   async function handleSubmit(event: FormEvent) {
-  event.preventDefault();
+    event.preventDefault();
 
-  try {
-    setSalvando(true);
-    setErro("");
-    setMensagem("");
+    try {
+      setSalvando(true);
+      setErro("");
+      setMensagem("");
 
-    const idadeNumero = Number(idade);
+      if (/\d/.test(nome)) {
+        setErro("Nome não pode conter números.");
+        setSalvando(false);
+        return;
+      }
 
-    if (idadeNumero > 110) {
-      setErro("Idade máxima permitida é 110 anos.");
-      setSalvando(false);
-      return;
-    }
+      const idadeNumero = Number(idade);
 
-    const payload: CriarPessoaRequest = {
-      nome: nome.trim(),
-      idade: idadeNumero,
-    };
+      if (idadeNumero > 110) {
+        setErro("Idade máxima permitida é 110 anos.");
+        setSalvando(false);
+        return;
+      }
 
-    await pessoasApi.criar(payload);
+      const payload: CriarPessoaRequest = {
+        nome: nome.trim(),
+        idade: idadeNumero,
+      };
+
+      await pessoasApi.criar(payload);
 
       setNome("");
       setIdade("");
@@ -126,7 +132,11 @@ export function PessoasPage() {
               id="nome"
               type="text"
               value={nome}
-              onChange={(e) => setNome(e.target.value)}
+              onChange={(e) => {
+                const valor = e.target.value;
+                const valorSemNumeros = valor.replace(/[0-9]/g, "");
+                setNome(valorSemNumeros);
+              }}
               maxLength={200}
               placeholder="Digite o nome"
               style={{
@@ -158,14 +168,14 @@ export function PessoasPage() {
                 if (numero > 110) return;
 
                 setIdade(valor);
-            }}
+              }}
               placeholder="Digite a idade"
               style={{
                 width: "100%",
                 padding: "10px",
                 borderRadius: "6px",
                 border: "1px solid #d1d5db",
-            }}
+              }}
             />
           </div>
 
