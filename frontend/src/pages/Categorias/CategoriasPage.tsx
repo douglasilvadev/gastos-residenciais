@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
 import { categoriasApi } from "../../api/categoriasApi";
 import { Finalidade } from "../../types/Categoria";
-import type { Categoria, CriarCategoriaRequest } from "../../types/Categoria";
+import type { Categoria, CriarCategoriaRequest, Finalidade as FinalidadeType } from "../../types/Categoria";
 
-function traduzirFinalidade(finalidade: Finalidade) {
+function traduzirFinalidade(finalidade: FinalidadeType) {
   switch (finalidade) {
     case Finalidade.Despesa:
       return "Despesa";
@@ -20,7 +20,7 @@ function traduzirFinalidade(finalidade: Finalidade) {
 export function CategoriasPage() {
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [descricao, setDescricao] = useState("");
-  const [finalidade, setFinalidade] = useState<number | "">("");
+  const [finalidade, setFinalidade] = useState<FinalidadeType | "">("");
   const [carregando, setCarregando] = useState(false);
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState("");
@@ -61,7 +61,7 @@ export function CategoriasPage() {
 
       const payload: CriarCategoriaRequest = {
         descricao: descricao.trim(),
-        finalidade: Number(finalidade),
+        finalidade,
       };
 
       await categoriasApi.criar(payload);
@@ -156,10 +156,17 @@ export function CategoriasPage() {
             </label>
             <select
               id="finalidade"
-              value={finalidade}
-              onChange={(e) =>
-                setFinalidade(e.target.value === "" ? "" : Number(e.target.value))
-              }
+              value={finalidade === "" ? "" : String(finalidade)}
+              onChange={(e) => {
+                const valor = e.target.value;
+
+                if (valor === "") {
+                  setFinalidade("");
+                  return;
+                }
+
+                setFinalidade(Number(valor) as FinalidadeType);
+              }}
               style={{
                 width: "100%",
                 padding: "10px",
@@ -168,9 +175,9 @@ export function CategoriasPage() {
               }}
             >
               <option value="">Selecione uma finalidade</option>
-              <option value={Finalidade.Despesa}>Despesa</option>
-              <option value={Finalidade.Receita}>Receita</option>
-              <option value={Finalidade.Ambas}>Ambas</option>
+              <option value={String(Finalidade.Despesa)}>Despesa</option>
+              <option value={String(Finalidade.Receita)}>Receita</option>
+              <option value={String(Finalidade.Ambas)}>Ambas</option>
             </select>
           </div>
 
