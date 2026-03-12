@@ -32,19 +32,27 @@ export function PessoasPage() {
   }, []);
 
   async function handleSubmit(event: FormEvent) {
-    event.preventDefault();
+  event.preventDefault();
 
-    try {
-      setSalvando(true);
-      setErro("");
-      setMensagem("");
+  try {
+    setSalvando(true);
+    setErro("");
+    setMensagem("");
 
-      const payload: CriarPessoaRequest = {
-        nome: nome.trim(),
-        idade: Number(idade),
-      };
+    const idadeNumero = Number(idade);
 
-      await pessoasApi.criar(payload);
+    if (idadeNumero > 110) {
+      setErro("Idade máxima permitida é 110 anos.");
+      setSalvando(false);
+      return;
+    }
+
+    const payload: CriarPessoaRequest = {
+      nome: nome.trim(),
+      idade: idadeNumero,
+    };
+
+    await pessoasApi.criar(payload);
 
       setNome("");
       setIdade("");
@@ -138,15 +146,26 @@ export function PessoasPage() {
               id="idade"
               type="number"
               value={idade}
-              onChange={(e) => setIdade(e.target.value)}
-              min={1}
+              min={0}
+              max={110}
+              onChange={(e) => {
+                const valor = e.target.value;
+
+                if (valor.length > 3) return;
+
+                const numero = Number(valor);
+
+                if (numero > 110) return;
+
+                setIdade(valor);
+            }}
               placeholder="Digite a idade"
               style={{
                 width: "100%",
                 padding: "10px",
                 borderRadius: "6px",
                 border: "1px solid #d1d5db",
-              }}
+            }}
             />
           </div>
 
