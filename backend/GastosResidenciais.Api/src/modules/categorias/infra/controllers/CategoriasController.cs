@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GastosResidenciais.Api.src.modules.categorias.infra.controllers;
 
+/// <summary>
+/// Controller HTTP do módulo de categorias.
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 public class CategoriasController : ControllerBase
@@ -14,7 +17,7 @@ public class CategoriasController : ControllerBase
         [FromServices] CriarCategoriaUseCase useCase)
     {
         var resultado = await useCase.Executar(request);
-        return StatusCode(StatusCodes.Status201Created, resultado);
+        return CreatedAtAction(nameof(Listar), new { id = resultado.Id }, resultado);
     }
 
     [HttpGet]

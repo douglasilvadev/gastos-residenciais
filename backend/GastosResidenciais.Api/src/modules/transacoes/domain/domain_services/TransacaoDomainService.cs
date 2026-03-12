@@ -5,6 +5,10 @@ using GastosResidenciais.Api.src.shared.infra.server.exceptions;
 
 namespace GastosResidenciais.Api.src.modules.transacoes.domain.domain_services;
 
+/// <summary>
+/// Serviço de domínio responsável por validar regras de negócio
+/// que envolvem múltiplas entidades.
+/// </summary>
 public class TransacaoDomainService
 {
     public void ValidarCriacao(Pessoa pessoa, Categoria categoria, TipoTransacao tipo)

@@ -5,6 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GastosResidenciais.Api.src.modules.categorias.infra.repository;
 
+/// <summary>
+/// Implementação concreta do repositório de categorias usando EF Core.
+/// </summary>
 public class CategoriaRepository : ICategoriaRepository
 {
     private readonly AppDbContext _context;

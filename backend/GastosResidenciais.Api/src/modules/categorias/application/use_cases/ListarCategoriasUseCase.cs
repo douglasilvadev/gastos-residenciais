@@ -3,6 +3,9 @@ using GastosResidenciais.Api.src.modules.categorias.domain.repository_interface;
 
 namespace GastosResidenciais.Api.src.modules.categorias.application.use_cases;
 
+/// <summary>
+/// Caso de uso responsável por listar todas as categorias cadastradas.
+/// </summary>
 public class ListarCategoriasUseCase
 {
     private readonly ICategoriaRepository _categoriaRepository;
