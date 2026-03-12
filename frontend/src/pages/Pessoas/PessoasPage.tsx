@@ -7,6 +7,7 @@ export function PessoasPage() {
   const [pessoas, setPessoas] = useState<Pessoa[]>([]);
   const [nome, setNome] = useState("");
   const [idade, setIdade] = useState("");
+  const [editandoId, setEditandoId] = useState<string | null>(null);
   const [carregando, setCarregando] = useState(false);
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState("");
@@ -30,6 +31,20 @@ export function PessoasPage() {
   useEffect(() => {
     carregarPessoas();
   }, []);
+
+  function limparFormulario() {
+    setNome("");
+    setIdade("");
+    setEditandoId(null);
+  }
+
+  function iniciarEdicao(pessoa: Pessoa) {
+    setErro("");
+    setMensagem("");
+    setEditandoId(pessoa.id);
+    setNome(pessoa.nome);
+    setIdade(String(pessoa.idade));
+  }
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
@@ -58,19 +73,22 @@ export function PessoasPage() {
         idade: idadeNumero,
       };
 
-      await pessoasApi.criar(payload);
+      if (editandoId) {
+        await pessoasApi.editar(editandoId, payload);
+        setMensagem("Pessoa atualizada com sucesso.");
+      } else {
+        await pessoasApi.criar(payload);
+        setMensagem("Pessoa cadastrada com sucesso.");
+      }
 
-      setNome("");
-      setIdade("");
-      setMensagem("Pessoa cadastrada com sucesso.");
-
+      limparFormulario();
       await carregarPessoas();
     } catch (error: any) {
       console.error(error);
 
       const mensagemApi =
         error?.response?.data?.error ||
-        "Não foi possível cadastrar a pessoa.";
+        "Não foi possível salvar a pessoa.";
 
       setErro(mensagemApi);
     } finally {
@@ -90,8 +108,12 @@ export function PessoasPage() {
       setMensagem("");
 
       await pessoasApi.deletar(id);
-      setMensagem("Pessoa removida com sucesso.");
 
+      if (editandoId === id) {
+        limparFormulario();
+      }
+
+      setMensagem("Pessoa removida com sucesso.");
       await carregarPessoas();
     } catch (error: any) {
       console.error(error);
@@ -118,7 +140,9 @@ export function PessoasPage() {
           border: "1px solid #e5e7eb",
         }}
       >
-        <h2 style={{ marginTop: 0 }}>Nova pessoa</h2>
+        <h2 style={{ marginTop: 0 }}>
+          {editandoId ? "Editar pessoa" : "Nova pessoa"}
+        </h2>
 
         <form
           onSubmit={handleSubmit}
@@ -179,20 +203,43 @@ export function PessoasPage() {
             />
           </div>
 
-          <button
-            type="submit"
-            disabled={salvando}
-            style={{
-              background: "#2563eb",
-              color: "#ffffff",
-              border: "none",
-              padding: "10px 16px",
-              borderRadius: "6px",
-              cursor: "pointer",
-            }}
-          >
-            {salvando ? "Salvando..." : "Cadastrar pessoa"}
-          </button>
+          <div style={{ display: "flex", gap: "12px" }}>
+            <button
+              type="submit"
+              disabled={salvando}
+              style={{
+                background: "#2563eb",
+                color: "#ffffff",
+                border: "none",
+                padding: "10px 16px",
+                borderRadius: "6px",
+                cursor: "pointer",
+              }}
+            >
+              {salvando
+                ? "Salvando..."
+                : editandoId
+                ? "Salvar alterações"
+                : "Cadastrar pessoa"}
+            </button>
+
+            {editandoId && (
+              <button
+                type="button"
+                onClick={limparFormulario}
+                style={{
+                  background: "#6b7280",
+                  color: "#ffffff",
+                  border: "none",
+                  padding: "10px 16px",
+                  borderRadius: "6px",
+                  cursor: "pointer",
+                }}
+              >
+                Cancelar
+              </button>
+            )}
+          </div>
         </form>
       </section>
 
@@ -261,7 +308,21 @@ export function PessoasPage() {
                   <td style={{ padding: "12px 8px" }}>
                     {new Date(pessoa.criadoEm).toLocaleString("pt-BR")}
                   </td>
-                  <td style={{ padding: "12px 8px" }}>
+                  <td style={{ padding: "12px 8px", display: "flex", gap: "8px" }}>
+                    <button
+                      onClick={() => iniciarEdicao(pessoa)}
+                      style={{
+                        background: "#2563eb",
+                        color: "#ffffff",
+                        border: "none",
+                        padding: "8px 12px",
+                        borderRadius: "6px",
+                        cursor: "pointer",
+                      }}
+                    >
+                      Editar
+                    </button>
+
                     <button
                       onClick={() => handleExcluir(pessoa.id)}
                       style={{
