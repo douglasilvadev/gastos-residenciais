@@ -20,7 +20,7 @@ function traduzirFinalidade(finalidade: Finalidade) {
 export function CategoriasPage() {
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [descricao, setDescricao] = useState("");
-  const [finalidade, setFinalidade] = useState<Finalidade>(Finalidade.Despesa);
+  const [finalidade, setFinalidade] = useState<number | "">("");
   const [carregando, setCarregando] = useState(false);
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState("");
@@ -53,15 +53,21 @@ export function CategoriasPage() {
       setErro("");
       setMensagem("");
 
+      if (finalidade === "") {
+        setErro("Selecione a finalidade da categoria.");
+        setSalvando(false);
+        return;
+      }
+
       const payload: CriarCategoriaRequest = {
         descricao: descricao.trim(),
-        finalidade,
+        finalidade: Number(finalidade),
       };
 
       await categoriasApi.criar(payload);
 
       setDescricao("");
-      setFinalidade(Finalidade.Despesa);
+      setFinalidade("");
       setMensagem("Categoria cadastrada com sucesso.");
 
       await carregarCategorias();
@@ -125,7 +131,9 @@ export function CategoriasPage() {
             <select
               id="finalidade"
               value={finalidade}
-              onChange={(e) => setFinalidade(Number(e.target.value) as Finalidade)}
+              onChange={(e) =>
+                setFinalidade(e.target.value === "" ? "" : Number(e.target.value))
+              }
               style={{
                 width: "100%",
                 padding: "10px",
@@ -133,6 +141,7 @@ export function CategoriasPage() {
                 border: "1px solid #d1d5db",
               }}
             >
+              <option value="">Selecione uma finalidade</option>
               <option value={Finalidade.Despesa}>Despesa</option>
               <option value={Finalidade.Receita}>Receita</option>
               <option value={Finalidade.Ambas}>Ambas</option>
