@@ -1,4 +1,5 @@
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import type {FormEvent } from "react";
 import { categoriasApi } from "../../api/categoriasApi";
 import { pessoasApi } from "../../api/pessoasApi";
 import { transacoesApi } from "../../api/transacoesApi";

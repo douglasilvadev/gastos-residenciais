@@ -1,7 +1,9 @@
-export enum TipoTransacao {
-  Despesa = 0,
-  Receita = 1,
-}
+export const TipoTransacao = {
+  Despesa: 0,
+  Receita: 1,
+} as const;
+
+export type TipoTransacao = (typeof TipoTransacao)[keyof typeof TipoTransacao];
 
 export interface Transacao {
   id: string;

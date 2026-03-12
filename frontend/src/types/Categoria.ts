@@ -1,8 +1,10 @@
-export enum Finalidade {
-  Despesa = 0,
-  Receita = 1,
-  Ambas = 2,
-}
+export const Finalidade = {
+  Despesa: 0,
+  Receita: 1,
+  Ambas: 2,
+} as const;
+
+export type Finalidade = (typeof Finalidade)[keyof typeof Finalidade];
 
 export interface Categoria {
   id: string;
