@@ -5,9 +5,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GastosResidenciais.Api.src.modules.categorias.infra.repository;
 
-/// <summary>
-/// Implementação concreta do repositório de categorias usando EF Core.
-/// </summary>
 public class CategoriaRepository : ICategoriaRepository
 {
     private readonly AppDbContext _context;
@@ -32,6 +29,12 @@ public class CategoriaRepository : ICategoriaRepository
     public async Task Adicionar(Categoria categoria)
     {
         await _context.Categorias.AddAsync(categoria);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task Remover(Categoria categoria)
+    {
+        _context.Categorias.Remove(categoria);
         await _context.SaveChangesAsync();
     }
 }

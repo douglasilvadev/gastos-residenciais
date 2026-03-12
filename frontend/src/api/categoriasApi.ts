@@ -11,4 +11,8 @@ export const categoriasApi = {
     const response = await httpClient.post<Categoria>("/categorias", data);
     return response.data;
   },
+
+  deletar: async (id: string): Promise<void> => {
+    await httpClient.delete(`/categorias/${id}`);
+  },
 };

@@ -84,6 +84,32 @@ export function CategoriasPage() {
     }
   }
 
+  async function handleExcluir(id: string) {
+    const confirmou = window.confirm("Deseja realmente excluir esta categoria?");
+
+    if (!confirmou) {
+      return;
+    }
+
+    try {
+      setErro("");
+      setMensagem("");
+
+      await categoriasApi.deletar(id);
+      setMensagem("Categoria removida com sucesso.");
+
+      await carregarCategorias();
+    } catch (error: any) {
+      console.error(error);
+
+      const mensagemApi =
+        error?.response?.data?.error ||
+        "Não foi possível excluir a categoria.";
+
+      setErro(mensagemApi);
+    }
+  }
+
   return (
     <div>
       <h1 style={{ marginTop: 0 }}>Categorias</h1>
@@ -219,6 +245,7 @@ export function CategoriasPage() {
                 <th style={{ padding: "12px 8px" }}>Descrição</th>
                 <th style={{ padding: "12px 8px" }}>Finalidade</th>
                 <th style={{ padding: "12px 8px" }}>Criado em</th>
+                <th style={{ padding: "12px 8px" }}>Ações</th>
               </tr>
             </thead>
             <tbody>
@@ -230,6 +257,21 @@ export function CategoriasPage() {
                   </td>
                   <td style={{ padding: "12px 8px" }}>
                     {new Date(categoria.criadoEm).toLocaleString("pt-BR")}
+                  </td>
+                  <td style={{ padding: "12px 8px" }}>
+                    <button
+                      onClick={() => handleExcluir(categoria.id)}
+                      style={{
+                        background: "#dc2626",
+                        color: "#ffffff",
+                        border: "none",
+                        padding: "8px 12px",
+                        borderRadius: "6px",
+                        cursor: "pointer",
+                      }}
+                    >
+                      Excluir
+                    </button>
                   </td>
                 </tr>
               ))}

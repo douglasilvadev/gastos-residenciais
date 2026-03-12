@@ -4,9 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GastosResidenciais.Api.src.modules.categorias.infra.controllers;
 
-/// <summary>
-/// Controller HTTP do módulo de categorias.
-/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 public class CategoriasController : ControllerBase
@@ -17,7 +14,7 @@ public class CategoriasController : ControllerBase
         [FromServices] CriarCategoriaUseCase useCase)
     {
         var resultado = await useCase.Executar(request);
-        return CreatedAtAction(nameof(Listar), new { id = resultado.Id }, resultado);
+        return StatusCode(StatusCodes.Status201Created, resultado);
     }
 
     [HttpGet]
@@ -26,5 +23,14 @@ public class CategoriasController : ControllerBase
     {
         var categorias = await useCase.Executar();
         return Ok(categorias);
+    }
+
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> Deletar(
+        Guid id,
+        [FromServices] DeletarCategoriaUseCase useCase)
+    {
+        await useCase.Executar(id);
+        return NoContent();
     }
 }
