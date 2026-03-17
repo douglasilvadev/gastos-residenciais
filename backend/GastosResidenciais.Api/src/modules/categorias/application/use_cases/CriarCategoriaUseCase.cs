@@ -4,9 +4,6 @@ using GastosResidenciais.Api.src.modules.categorias.domain.repository_interface;
 
 namespace GastosResidenciais.Api.src.modules.categorias.application.use_cases;
 
-/// <summary>
-/// Caso de uso responsável por criar uma nova categoria.
-/// </summary>
 public class CriarCategoriaUseCase
 {
     private readonly ICategoriaRepository _categoriaRepository;
@@ -18,7 +15,7 @@ public class CriarCategoriaUseCase
 
     public async Task<CategoriaResponse> Executar(CriarCategoriaRequest request)
     {
-        var categoria = Categoria.Criar(request.Descricao, request.Finalidade);
+        var categoria = Categoria.Criar(request.Descricao.Trim(), request.Finalidade);
 
         await _categoriaRepository.Adicionar(categoria);
 

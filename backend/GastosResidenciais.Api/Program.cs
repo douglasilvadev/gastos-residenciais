@@ -1,3 +1,6 @@
+using FluentValidation;
+using FluentValidation.AspNetCore;
+
 using GastosResidenciais.Api.src.modules.categorias.application.use_cases;
 using GastosResidenciais.Api.src.modules.categorias.domain.repository_interface;
 using GastosResidenciais.Api.src.modules.categorias.infra.repository;
@@ -26,6 +29,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+builder.Services.AddFluentValidationAutoValidation();
 
 builder.Services.AddCors(options =>
 {
@@ -60,8 +66,9 @@ builder.Services.AddScoped<ConsultarTotaisPorCategoriaUseCase>();
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
+if (app.Environment.IsDevelopment())
 {
+    using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.Migrate();
 }

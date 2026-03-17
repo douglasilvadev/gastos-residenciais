@@ -13,18 +13,18 @@ public class CriarTransacaoUseCase
     private readonly ITransacaoRepository _transacaoRepository;
     private readonly IPessoaRepository _pessoaRepository;
     private readonly ICategoriaRepository _categoriaRepository;
-    private readonly TransacaoDomainService _domainService;
+    private readonly TransacaoDomainService _transacaoDomainService;
 
     public CriarTransacaoUseCase(
         ITransacaoRepository transacaoRepository,
         IPessoaRepository pessoaRepository,
         ICategoriaRepository categoriaRepository,
-        TransacaoDomainService domainService)
+        TransacaoDomainService transacaoDomainService)
     {
         _transacaoRepository = transacaoRepository;
         _pessoaRepository = pessoaRepository;
         _categoriaRepository = categoriaRepository;
-        _domainService = domainService;
+        _transacaoDomainService = transacaoDomainService;
     }
 
     public async Task<TransacaoResponse> Executar(CriarTransacaoRequest request)
@@ -35,15 +35,14 @@ public class CriarTransacaoUseCase
         var categoria = await _categoriaRepository.ObterPorId(request.CategoriaId)
             ?? throw new NotFoundException("Categoria não encontrada.");
 
-        _domainService.ValidarCriacao(pessoa, categoria, request.Tipo);
+        _transacaoDomainService.ValidarCriacao(pessoa, categoria, request.Tipo);
 
         var transacao = Transacao.Criar(
-            request.Descricao,
+            request.Descricao.Trim(),
             request.Valor,
             request.Tipo,
             request.CategoriaId,
-            request.PessoaId
-        );
+            request.PessoaId);
 
         await _transacaoRepository.Adicionar(transacao);
 
