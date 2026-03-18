@@ -1,22 +1,27 @@
 import { useEffect, useState } from "react";
-import type { FormEvent } from "react";
+
+import { Alert } from "../../components/Alert";
+import { Button } from "../../components/Button";
+import { Card } from "../../components/Card";
 import { pessoasApi } from "../../api/pessoasApi";
-import type { CriarPessoaRequest, Pessoa } from "../../types/Pessoa";
+import { PessoaForm } from "./PessoaForm";
+import type { Pessoa } from "../../types/Pessoa";
+import type { PessoaFormData } from "../../schemas/pessoaSchema";
 
 export function PessoasPage() {
   const [pessoas, setPessoas] = useState<Pessoa[]>([]);
-  const [nome, setNome] = useState("");
-  const [idade, setIdade] = useState("");
   const [editandoId, setEditandoId] = useState<string | null>(null);
+  const [defaultValues, setDefaultValues] = useState<PessoaFormData | undefined>(
+    undefined
+  );
   const [carregando, setCarregando] = useState(false);
-  const [salvando, setSalvando] = useState(false);
-  const [erro, setErro] = useState("");
-  const [mensagem, setMensagem] = useState("");
+  const [erro, setErro] = useState<string | null>(null);
+  const [mensagem, setMensagem] = useState<string | null>(null);
 
   async function carregarPessoas() {
     try {
       setCarregando(true);
-      setErro("");
+      setErro(null);
 
       const dados = await pessoasApi.listar();
       setPessoas(dados);
@@ -32,85 +37,59 @@ export function PessoasPage() {
     carregarPessoas();
   }, []);
 
-  function limparFormulario() {
-    setNome("");
-    setIdade("");
-    setEditandoId(null);
-  }
-
   function iniciarEdicao(pessoa: Pessoa) {
-    setErro("");
-    setMensagem("");
+    setErro(null);
+    setMensagem(null);
     setEditandoId(pessoa.id);
-    setNome(pessoa.nome);
-    setIdade(String(pessoa.idade));
+    setDefaultValues({
+      nome: pessoa.nome,
+      idade: pessoa.idade,
+    });
   }
 
-  async function handleSubmit(event: FormEvent) {
-    event.preventDefault();
+  function cancelarEdicao() {
+    setEditandoId(null);
+    setDefaultValues(undefined);
+  }
 
+  async function handleSubmit(data: PessoaFormData) {
     try {
-      setSalvando(true);
-      setErro("");
-      setMensagem("");
-
-      if (/\d/.test(nome)) {
-        setErro("Nome não pode conter números.");
-        setSalvando(false);
-        return;
-      }
-
-      const idadeNumero = Number(idade);
-
-      if (idadeNumero > 110) {
-        setErro("Idade máxima permitida é 110 anos.");
-        setSalvando(false);
-        return;
-      }
-
-      const payload: CriarPessoaRequest = {
-        nome: nome.trim(),
-        idade: idadeNumero,
-      };
+      setErro(null);
+      setMensagem(null);
 
       if (editandoId) {
-        await pessoasApi.editar(editandoId, payload);
+        await pessoasApi.editar(editandoId, data);
         setMensagem("Pessoa atualizada com sucesso.");
       } else {
-        await pessoasApi.criar(payload);
+        await pessoasApi.criar(data);
         setMensagem("Pessoa cadastrada com sucesso.");
       }
 
-      limparFormulario();
+      cancelarEdicao();
       await carregarPessoas();
     } catch (error: any) {
       console.error(error);
 
       const mensagemApi =
-        error?.response?.data?.error ||
-        "Não foi possível salvar a pessoa.";
+        error?.response?.data?.error || "Não foi possível salvar a pessoa.";
 
       setErro(mensagemApi);
-    } finally {
-      setSalvando(false);
     }
   }
 
   async function handleExcluir(id: string) {
     const confirmou = window.confirm("Deseja realmente excluir esta pessoa?");
 
-    if (!confirmou) {
-      return;
-    }
+    if (!confirmou) return;
 
     try {
-      setErro("");
-      setMensagem("");
+      setErro(null);
+      setMensagem(null);
 
       await pessoasApi.deletar(id);
 
       if (editandoId === id) {
-        limparFormulario();
+        cancelarEdicao();
       }
 
       setMensagem("Pessoa removida com sucesso.");
@@ -119,8 +98,7 @@ export function PessoasPage() {
       console.error(error);
 
       const mensagemApi =
-        error?.response?.data?.error ||
-        "Não foi possível excluir a pessoa.";
+        error?.response?.data?.error || "Não foi possível excluir a pessoa.";
 
       setErro(mensagemApi);
     }
@@ -131,154 +109,23 @@ export function PessoasPage() {
       <h1 style={{ marginTop: 0 }}>Pessoas</h1>
       <p>Cadastre e gerencie as pessoas do sistema.</p>
 
-      <section
-        style={{
-          background: "#ffffff",
-          padding: "16px",
-          borderRadius: "8px",
-          marginBottom: "24px",
-          border: "1px solid #e5e7eb",
-        }}
-      >
+      <Card style={{ marginBottom: "24px" }}>
         <h2 style={{ marginTop: 0 }}>
           {editandoId ? "Editar pessoa" : "Nova pessoa"}
         </h2>
 
-        <form
+        <PessoaForm
+          editando={!!editandoId}
+          defaultValues={defaultValues}
           onSubmit={handleSubmit}
-          style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "400px" }}
-        >
-          <div>
-            <label htmlFor="nome" style={{ display: "block", marginBottom: "6px" }}>
-              Nome
-            </label>
-            <input
-              id="nome"
-              type="text"
-              value={nome}
-              onChange={(e) => {
-                const valor = e.target.value;
-                const valorSemNumeros = valor.replace(/[0-9]/g, "");
-                setNome(valorSemNumeros);
-              }}
-              maxLength={200}
-              placeholder="Digite o nome"
-              style={{
-                width: "100%",
-                padding: "10px",
-                borderRadius: "6px",
-                border: "1px solid #d1d5db",
-              }}
-            />
-          </div>
+          onCancel={cancelarEdicao}
+        />
+      </Card>
 
-          <div>
-            <label htmlFor="idade" style={{ display: "block", marginBottom: "6px" }}>
-              Idade
-            </label>
-            <input
-              id="idade"
-              type="number"
-              value={idade}
-              min={0}
-              max={110}
-              onChange={(e) => {
-                const valor = e.target.value;
+      <Alert variant="error" message={erro} />
+      <Alert variant="success" message={mensagem} />
 
-                if (valor.length > 3) return;
-
-                const numero = Number(valor);
-
-                if (numero > 110) return;
-
-                setIdade(valor);
-              }}
-              placeholder="Digite a idade"
-              style={{
-                width: "100%",
-                padding: "10px",
-                borderRadius: "6px",
-                border: "1px solid #d1d5db",
-              }}
-            />
-          </div>
-
-          <div style={{ display: "flex", gap: "12px" }}>
-            <button
-              type="submit"
-              disabled={salvando}
-              style={{
-                background: "#2563eb",
-                color: "#ffffff",
-                border: "none",
-                padding: "10px 16px",
-                borderRadius: "6px",
-                cursor: "pointer",
-              }}
-            >
-              {salvando
-                ? "Salvando..."
-                : editandoId
-                ? "Salvar alterações"
-                : "Cadastrar pessoa"}
-            </button>
-
-            {editandoId && (
-              <button
-                type="button"
-                onClick={limparFormulario}
-                style={{
-                  background: "#6b7280",
-                  color: "#ffffff",
-                  border: "none",
-                  padding: "10px 16px",
-                  borderRadius: "6px",
-                  cursor: "pointer",
-                }}
-              >
-                Cancelar
-              </button>
-            )}
-          </div>
-        </form>
-      </section>
-
-      {erro && (
-        <div
-          style={{
-            background: "#fee2e2",
-            color: "#991b1b",
-            padding: "12px",
-            borderRadius: "8px",
-            marginBottom: "16px",
-          }}
-        >
-          {erro}
-        </div>
-      )}
-
-      {mensagem && (
-        <div
-          style={{
-            background: "#dcfce7",
-            color: "#166534",
-            padding: "12px",
-            borderRadius: "8px",
-            marginBottom: "16px",
-          }}
-        >
-          {mensagem}
-        </div>
-      )}
-
-      <section
-        style={{
-          background: "#ffffff",
-          padding: "16px",
-          borderRadius: "8px",
-          border: "1px solid #e5e7eb",
-        }}
-      >
+      <Card>
         <h2 style={{ marginTop: 0 }}>Lista de pessoas</h2>
 
         {carregando ? (
@@ -286,14 +133,14 @@ export function PessoasPage() {
         ) : pessoas.length === 0 ? (
           <p>Nenhuma pessoa cadastrada.</p>
         ) : (
-          <table
-            style={{
-              width: "100%",
-              borderCollapse: "collapse",
-            }}
-          >
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
-              <tr style={{ textAlign: "left", borderBottom: "1px solid #e5e7eb" }}>
+              <tr
+                style={{
+                  textAlign: "left",
+                  borderBottom: "1px solid #e5e7eb",
+                }}
+              >
                 <th style={{ padding: "12px 8px" }}>Nome</th>
                 <th style={{ padding: "12px 8px" }}>Idade</th>
                 <th style={{ padding: "12px 8px" }}>Criado em</th>
@@ -302,47 +149,37 @@ export function PessoasPage() {
             </thead>
             <tbody>
               {pessoas.map((pessoa) => (
-                <tr key={pessoa.id} style={{ borderBottom: "1px solid #f3f4f6" }}>
+                <tr
+                  key={pessoa.id}
+                  style={{ borderBottom: "1px solid #f3f4f6" }}
+                >
                   <td style={{ padding: "12px 8px" }}>{pessoa.nome}</td>
                   <td style={{ padding: "12px 8px" }}>{pessoa.idade}</td>
                   <td style={{ padding: "12px 8px" }}>
                     {new Date(pessoa.criadoEm).toLocaleString("pt-BR")}
                   </td>
-                  <td style={{ padding: "12px 8px", display: "flex", gap: "8px" }}>
-                    <button
-                      onClick={() => iniciarEdicao(pessoa)}
-                      style={{
-                        background: "#2563eb",
-                        color: "#ffffff",
-                        border: "none",
-                        padding: "8px 12px",
-                        borderRadius: "6px",
-                        cursor: "pointer",
-                      }}
-                    >
-                      Editar
-                    </button>
+                  <td
+                    style={{
+                      padding: "12px 8px",
+                      display: "flex",
+                      gap: "8px",
+                    }}
+                  >
+                    <Button onClick={() => iniciarEdicao(pessoa)}>Editar</Button>
 
-                    <button
+                    <Button
+                      variant="danger"
                       onClick={() => handleExcluir(pessoa.id)}
-                      style={{
-                        background: "#dc2626",
-                        color: "#ffffff",
-                        border: "none",
-                        padding: "8px 12px",
-                        borderRadius: "6px",
-                        cursor: "pointer",
-                      }}
                     >
                       Excluir
-                    </button>
+                    </Button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         )}
-      </section>
+      </Card>
     </div>
   );
 }

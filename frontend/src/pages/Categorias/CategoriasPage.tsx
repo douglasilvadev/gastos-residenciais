@@ -1,10 +1,15 @@
 import { useEffect, useState } from "react";
-import type { FormEvent } from "react";
-import { categoriasApi } from "../../api/categoriasApi";
-import { Finalidade } from "../../types/Categoria";
-import type { Categoria, CriarCategoriaRequest, Finalidade as FinalidadeType } from "../../types/Categoria";
 
-function traduzirFinalidade(finalidade: FinalidadeType) {
+import { Alert } from "../../components/Alert";
+import { Button } from "../../components/Button";
+import { Card } from "../../components/Card";
+import { categoriasApi } from "../../api/categoriasApi";
+import { CategoriaForm } from "./CategoriaForm";
+import { Finalidade } from "../../types/Categoria";
+import type { Categoria } from "../../types/Categoria";
+import type { CategoriaFormData } from "../../schemas/categoriaSchema";
+
+function traduzirFinalidade(finalidade: number) {
   switch (finalidade) {
     case Finalidade.Despesa:
       return "Despesa";
@@ -19,17 +24,14 @@ function traduzirFinalidade(finalidade: FinalidadeType) {
 
 export function CategoriasPage() {
   const [categorias, setCategorias] = useState<Categoria[]>([]);
-  const [descricao, setDescricao] = useState("");
-  const [finalidade, setFinalidade] = useState<FinalidadeType | "">("");
   const [carregando, setCarregando] = useState(false);
-  const [salvando, setSalvando] = useState(false);
-  const [erro, setErro] = useState("");
-  const [mensagem, setMensagem] = useState("");
+  const [erro, setErro] = useState<string | null>(null);
+  const [mensagem, setMensagem] = useState<string | null>(null);
 
   async function carregarCategorias() {
     try {
       setCarregando(true);
-      setErro("");
+      setErro(null);
 
       const dados = await categoriasApi.listar();
       setCategorias(dados);
@@ -45,29 +47,12 @@ export function CategoriasPage() {
     carregarCategorias();
   }, []);
 
-  async function handleSubmit(event: FormEvent) {
-    event.preventDefault();
-
+  async function handleSubmit(data: CategoriaFormData) {
     try {
-      setSalvando(true);
-      setErro("");
-      setMensagem("");
+      setErro(null);
+      setMensagem(null);
 
-      if (finalidade === "") {
-        setErro("Selecione a finalidade da categoria.");
-        setSalvando(false);
-        return;
-      }
-
-      const payload: CriarCategoriaRequest = {
-        descricao: descricao.trim(),
-        finalidade,
-      };
-
-      await categoriasApi.criar(payload);
-
-      setDescricao("");
-      setFinalidade("");
+      await categoriasApi.criar(data);
       setMensagem("Categoria cadastrada com sucesso.");
 
       await carregarCategorias();
@@ -75,25 +60,20 @@ export function CategoriasPage() {
       console.error(error);
 
       const mensagemApi =
-        error?.response?.data?.error ||
-        "Não foi possível cadastrar a categoria.";
+        error?.response?.data?.error || "Não foi possível cadastrar a categoria.";
 
       setErro(mensagemApi);
-    } finally {
-      setSalvando(false);
     }
   }
 
   async function handleExcluir(id: string) {
     const confirmou = window.confirm("Deseja realmente excluir esta categoria?");
 
-    if (!confirmou) {
-      return;
-    }
+    if (!confirmou) return;
 
     try {
-      setErro("");
-      setMensagem("");
+      setErro(null);
+      setMensagem(null);
 
       await categoriasApi.deletar(id);
       setMensagem("Categoria removida com sucesso.");
@@ -103,8 +83,7 @@ export function CategoriasPage() {
       console.error(error);
 
       const mensagemApi =
-        error?.response?.data?.error ||
-        "Não foi possível excluir a categoria.";
+        error?.response?.data?.error || "Não foi possível excluir a categoria.";
 
       setErro(mensagemApi);
     }
@@ -115,125 +94,16 @@ export function CategoriasPage() {
       <h1 style={{ marginTop: 0 }}>Categorias</h1>
       <p>Cadastre e gerencie as categorias do sistema.</p>
 
-      <section
-        style={{
-          background: "#ffffff",
-          padding: "16px",
-          borderRadius: "8px",
-          marginBottom: "24px",
-          border: "1px solid #e5e7eb",
-        }}
-      >
+      <Card style={{ marginBottom: "24px" }}>
         <h2 style={{ marginTop: 0 }}>Nova categoria</h2>
 
-        <form
-          onSubmit={handleSubmit}
-          style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "400px" }}
-        >
-          <div>
-            <label htmlFor="descricao" style={{ display: "block", marginBottom: "6px" }}>
-              Descrição
-            </label>
-            <input
-              id="descricao"
-              type="text"
-              value={descricao}
-              onChange={(e) => setDescricao(e.target.value)}
-              maxLength={400}
-              placeholder="Digite a descrição"
-              style={{
-                width: "100%",
-                padding: "10px",
-                borderRadius: "6px",
-                border: "1px solid #d1d5db",
-              }}
-            />
-          </div>
+        <CategoriaForm onSubmit={handleSubmit} />
+      </Card>
 
-          <div>
-            <label htmlFor="finalidade" style={{ display: "block", marginBottom: "6px" }}>
-              Finalidade
-            </label>
-            <select
-              id="finalidade"
-              value={finalidade === "" ? "" : String(finalidade)}
-              onChange={(e) => {
-                const valor = e.target.value;
+      <Alert variant="error" message={erro} />
+      <Alert variant="success" message={mensagem} />
 
-                if (valor === "") {
-                  setFinalidade("");
-                  return;
-                }
-
-                setFinalidade(Number(valor) as FinalidadeType);
-              }}
-              style={{
-                width: "100%",
-                padding: "10px",
-                borderRadius: "6px",
-                border: "1px solid #d1d5db",
-              }}
-            >
-              <option value="">Selecione uma finalidade</option>
-              <option value={String(Finalidade.Despesa)}>Despesa</option>
-              <option value={String(Finalidade.Receita)}>Receita</option>
-              <option value={String(Finalidade.Ambas)}>Ambas</option>
-            </select>
-          </div>
-
-          <button
-            type="submit"
-            disabled={salvando}
-            style={{
-              background: "#2563eb",
-              color: "#ffffff",
-              border: "none",
-              padding: "10px 16px",
-              borderRadius: "6px",
-              cursor: "pointer",
-            }}
-          >
-            {salvando ? "Salvando..." : "Cadastrar categoria"}
-          </button>
-        </form>
-      </section>
-
-      {erro && (
-        <div
-          style={{
-            background: "#fee2e2",
-            color: "#991b1b",
-            padding: "12px",
-            borderRadius: "8px",
-            marginBottom: "16px",
-          }}
-        >
-          {erro}
-        </div>
-      )}
-
-      {mensagem && (
-        <div
-          style={{
-            background: "#dcfce7",
-            color: "#166534",
-            padding: "12px",
-            borderRadius: "8px",
-            marginBottom: "16px",
-          }}
-        >
-          {mensagem}
-        </div>
-      )}
-
-      <section
-        style={{
-          background: "#ffffff",
-          padding: "16px",
-          borderRadius: "8px",
-          border: "1px solid #e5e7eb",
-        }}
-      >
+      <Card>
         <h2 style={{ marginTop: 0 }}>Lista de categorias</h2>
 
         {carregando ? (
@@ -241,14 +111,14 @@ export function CategoriasPage() {
         ) : categorias.length === 0 ? (
           <p>Nenhuma categoria cadastrada.</p>
         ) : (
-          <table
-            style={{
-              width: "100%",
-              borderCollapse: "collapse",
-            }}
-          >
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
-              <tr style={{ textAlign: "left", borderBottom: "1px solid #e5e7eb" }}>
+              <tr
+                style={{
+                  textAlign: "left",
+                  borderBottom: "1px solid #e5e7eb",
+                }}
+              >
                 <th style={{ padding: "12px 8px" }}>Descrição</th>
                 <th style={{ padding: "12px 8px" }}>Finalidade</th>
                 <th style={{ padding: "12px 8px" }}>Criado em</th>
@@ -257,7 +127,10 @@ export function CategoriasPage() {
             </thead>
             <tbody>
               {categorias.map((categoria) => (
-                <tr key={categoria.id} style={{ borderBottom: "1px solid #f3f4f6" }}>
+                <tr
+                  key={categoria.id}
+                  style={{ borderBottom: "1px solid #f3f4f6" }}
+                >
                   <td style={{ padding: "12px 8px" }}>{categoria.descricao}</td>
                   <td style={{ padding: "12px 8px" }}>
                     {traduzirFinalidade(categoria.finalidade)}
@@ -266,26 +139,19 @@ export function CategoriasPage() {
                     {new Date(categoria.criadoEm).toLocaleString("pt-BR")}
                   </td>
                   <td style={{ padding: "12px 8px" }}>
-                    <button
+                    <Button
+                      variant="danger"
                       onClick={() => handleExcluir(categoria.id)}
-                      style={{
-                        background: "#dc2626",
-                        color: "#ffffff",
-                        border: "none",
-                        padding: "8px 12px",
-                        borderRadius: "6px",
-                        cursor: "pointer",
-                      }}
                     >
                       Excluir
-                    </button>
+                    </Button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         )}
-      </section>
+      </Card>
     </div>
   );
 }
