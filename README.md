@@ -1,10 +1,10 @@
-# 💰 Sistema de Gastos Residenciais
+# Sistema de Gastos Residenciais
 
 Aplicação fullstack para gerenciamento de gastos residenciais, permitindo o controle de pessoas, categorias e transações financeiras, além de relatórios consolidados.
 
 ---
 
-# 🚀 Tecnologias Utilizadas
+# Tecnologias Utilizadas
 
 ## Backend
 
@@ -25,7 +25,7 @@ Aplicação fullstack para gerenciamento de gastos residenciais, permitindo o co
 
 ---
 
-# 📦 Funcionalidades
+# Funcionalidades
 
 * Cadastro de pessoas
 * Cadastro de categorias (Despesa / Receita / Ambas)
@@ -40,7 +40,7 @@ Aplicação fullstack para gerenciamento de gastos residenciais, permitindo o co
 
 ---
 
-# 🧠 Arquitetura
+# Arquitetura
 
 ## Backend (Clean Architecture)
 
@@ -80,9 +80,9 @@ src/
 
 ---
 
-# ⚙️ Como Rodar o Projeto
+# Como Rodar o Projeto
 
-## 🔹 1. Rodar com Docker (RECOMENDADO)
+## 1. Rodar com Docker (RECOMENDADO)
 
 ### Pré-requisitos:
 
@@ -104,9 +104,9 @@ docker compose up --build
 
 ---
 
-## 🔹 2. Rodar Manualmente
+## 2. Rodar Manualmente
 
-### 📌 Backend
+### Backend
 
 ```bash
 cd backend/GastosResidenciais.Api
@@ -115,7 +115,7 @@ dotnet build
 dotnet run
 ```
 
-📌 A API roda em:
+A API roda em:
 
 ```
 http://localhost:5158
@@ -129,7 +129,7 @@ db.Database.Migrate();
 
 ---
 
-### 📌 Frontend
+### Frontend
 
 ```bash
 cd frontend
@@ -137,7 +137,7 @@ npm install
 npm run dev
 ```
 
-📌 Frontend:
+Frontend:
 
 ```
 http://localhost:5173
@@ -145,7 +145,7 @@ http://localhost:5173
 
 ---
 
-# 🔐 Configuração de Ambiente
+# Configuração de Ambiente
 
 ## Frontend (.env)
 
@@ -167,7 +167,7 @@ import.meta.env.VITE_API_BASE_URL
 
 ---
 
-# 🐘 Banco de Dados
+# Banco de Dados
 
 * PostgreSQL
 * Criado automaticamente via Docker
@@ -181,7 +181,7 @@ Host=localhost;Port=5432;Database=gastos_residenciais;Username=postgres;Password
 
 ---
 
-# 🐳 Docker
+# Docker
 
 O projeto utiliza:
 
@@ -200,7 +200,7 @@ O projeto utiliza:
 
 ---
 
-# 🧪 Validação de Dados (Frontend)
+# Validação de Dados (Frontend)
 
 Implementado com:
 
@@ -227,7 +227,7 @@ Implementado com:
 
 ---
 
-# 🎨 Componentização
+# Componentização
 
 Criados componentes reutilizáveis:
 
@@ -246,7 +246,7 @@ Criados componentes reutilizáveis:
 
 ---
 
-# 💡 Melhorias Implementadas
+# Melhorias Implementadas
 
 * ✔ Docker completo (API + Front + DB)
 * ✔ Migrations automáticas
@@ -260,7 +260,7 @@ Criados componentes reutilizáveis:
 
 ---
 
-# 📊 Próximas Melhorias
+# Próximas Melhorias
 
 * DataTable reutilizável
 * Paginação
